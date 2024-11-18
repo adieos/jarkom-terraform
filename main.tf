@@ -18,7 +18,7 @@ provider "proxmox" {
   insecure = true
 }
 
-// resource node TEST
+// resource node DONE
 resource "proxmox_virtual_environment_file" "cloud_config-geprek" {
   content_type = "snippets"
   datastore_id = "local"
@@ -697,6 +697,39 @@ resource "proxmox_virtual_environment_file" "cloud_config-alfamart" {
   }
 }
 
+resource "proxmox_virtual_environment_file" "cloud_config-sakinah" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "its"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    groups:
+      - admingroup: [root, sys]
+      - cloud-users
+    users:
+      - default
+      - name: asahitamlegam
+        plain_text_passwd: acc
+        groups: sudo
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    runcmd:
+      - sysctl -w net.ipv4.ip_forward=1
+      - echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
+      - netplan apply
+      - ip link set eth0 up
+      - ip link set eth1 up
+      - ip route add 0.0.0.0/0 via 192.168.6.17
+      - echo "Initialization complete" > /tmp/init_done
+    EOF
+
+    file_name = "cloud-config-sakinah-D06.yaml"
+  }
+}
+
 // router TEST
 # resource "proxmox_virtual_environment_vm" "alfamart-D06" {
 #     name = "alfamart-D06"
@@ -773,3 +806,68 @@ resource "proxmox_virtual_environment_file" "cloud_config-alfamart" {
 #       bridge = "vmbr0"
 #     }
 # }
+
+resource "proxmox_virtual_environment_vm" "sakinah-D06" {
+    name = "sakinah-D06"
+    node_name = "its"
+    on_boot = true
+    stop_on_destroy = true
+    scsi_hardware = "virtio-scsi-single"
+    vm_id = lookup(var.vm_id_list, "sakinah-D06")
+
+    clone {
+      datastore_id = "local-lvm"
+      node_name = "its"
+      vm_id = 5555
+    }
+    
+    agent {
+      enabled = false
+    }
+
+    initialization {
+      ip_config { #eth0
+        ipv4 {
+          address = lookup(var.ip_list, "sakinah-superindo")
+          gateway = lookup(var.gateaway_list, "sakinah-superindo")
+        }
+      }
+      ip_config { #eth1
+        ipv4 {
+          address = lookup(var.ip_list, "sakinah-sw3")
+        }
+      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-sakinah.id
+    }
+
+    cpu {
+      cores = 1
+      type = "x86-64-v2-AES"
+    }
+
+    memory {
+      dedicated = 1024 # 1GB
+      floating = 1024
+    }
+
+    disk {
+      datastore_id = "local-lvm"
+      file_id = "local:iso/focal-server-cloudimg-amd64.img"
+      file_format = "raw"
+      interface = "virtio0"
+      iothread = true
+      size = 3 # GB
+    }
+
+    network_device {
+      enabled = true
+      firewall = false
+      bridge = "vmbr0"
+    }
+
+    network_device {
+      enabled = true
+      firewall = false
+      bridge = "vmbr0"
+    }
+}
