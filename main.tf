@@ -8,6 +8,8 @@ terraform {
 }
 
 // terraform apply --target=proxmox_virtual_environment_vm.nasi-uduk-D06
+// command: (ganti geprek dengan node yang sesuai)
+// terraform apply --target=proxmox_virtual_environment_file.cloud_config-geprek --target=proxmox_virtual_environment_vm.geprek-D06
 
 provider "proxmox" {
   endpoint = var.proxmox_url
@@ -16,7 +18,210 @@ provider "proxmox" {
   insecure = true
 }
 
-// node DONE
+// resource node TEST
+resource "proxmox_virtual_environment_file" "cloud_config-geprek" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "its"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    groups:
+      - admingroup: [root, sys]
+      - cloud-users
+    users:
+      - default
+      - name: asahitamlegam
+        plain_text_passwd: acc
+        groups: sudo
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    EOF
+
+    file_name = "cloud-config-geprek-D06.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_config-nasi-uduk" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "its"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    groups:
+      - admingroup: [root, sys]
+      - cloud-users
+    users:
+      - default
+      - name: asahitamlegam
+        plain_text_passwd: acc
+        groups: sudo
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    EOF
+
+    file_name = "cloud-config-nasi-uduk-D06.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_config-kwetiaw" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "its"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    groups:
+      - admingroup: [root, sys]
+      - cloud-users
+    users:
+      - default
+      - name: asahitamlegam
+        plain_text_passwd: acc
+        groups: sudo
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    EOF
+
+    file_name = "cloud-config-kwetiaw-D06.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_config-pangsit" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "its"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    groups:
+      - admingroup: [root, sys]
+      - cloud-users
+    users:
+      - default
+      - name: asahitamlegam
+        plain_text_passwd: acc
+        groups: sudo
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    EOF
+
+    file_name = "cloud-config-pangsit-D06.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_config-naspad" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "its"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    groups:
+      - admingroup: [root, sys]
+      - cloud-users
+    users:
+      - default
+      - name: asahitamlegam
+        plain_text_passwd: acc
+        groups: sudo
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    EOF
+
+    file_name = "cloud-config-naspad-D06.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_config-ikan-fillet" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "its"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    groups:
+      - admingroup: [root, sys]
+      - cloud-users
+    users:
+      - default
+      - name: asahitamlegam
+        plain_text_passwd: acc
+        groups: sudo
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    EOF
+
+    file_name = "cloud-config-ikan-fillet-D06.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_config-tahu-tek" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "its"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    groups:
+      - admingroup: [root, sys]
+      - cloud-users
+    users:
+      - default
+      - name: asahitamlegam
+        plain_text_passwd: acc
+        groups: sudo
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    EOF
+
+    file_name = "cloud-config-tahu-tek-D06.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_config-sego-jamur" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "its"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    groups:
+      - admingroup: [root, sys]
+      - cloud-users
+    users:
+      - default
+      - name: asahitamlegam
+        plain_text_passwd: acc
+        groups: sudo
+        shell: /bin/bash
+        lock_passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    EOF
+
+    file_name = "cloud-config-sego-jamur-D06.yaml"
+  }
+}
+
+
+
+// node CANT LOGIN
 resource "proxmox_virtual_environment_vm" "nasi-uduk-D06" {
     name = "nasi-uduk-D06"
     node_name = "its"
@@ -42,10 +247,7 @@ resource "proxmox_virtual_environment_vm" "nasi-uduk-D06" {
           gateway = lookup(var.gateaway_list, "nasi-uduk-D06")
         }
       }
-      user_account {
-        username = "asahitamlegam"
-        password = "acc"
-      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-nasi-uduk.id
     }
 
     cpu {
@@ -74,7 +276,7 @@ resource "proxmox_virtual_environment_vm" "nasi-uduk-D06" {
     }
 }
 
-// node TEST
+// node TEST YAML
 resource "proxmox_virtual_environment_vm" "geprek-D06" {
     name = "geprek-D06"
     node_name = "its"
@@ -100,10 +302,7 @@ resource "proxmox_virtual_environment_vm" "geprek-D06" {
           gateway = lookup(var.gateaway_list, "geprek-D06")
         }
       }
-      user_account {
-        username = "asahitamlegam"
-        password = "acc"
-      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-geprek.id
     }
 
     cpu {
@@ -158,10 +357,7 @@ resource "proxmox_virtual_environment_vm" "kwetiaw-D06" {
           gateway = lookup(var.gateaway_list, "kwetiaw-D06")
         }
       }
-      user_account {
-        username = "asahitamlegam"
-        password = "acc"
-      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-kwetiaw.id
     }
 
     cpu {
@@ -216,10 +412,7 @@ resource "proxmox_virtual_environment_vm" "pangsit-D06" {
           gateway = lookup(var.gateaway_list, "pangsit-D06")
         }
       }
-      user_account {
-        username = "asahitamlegam"
-        password = "acc"
-      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-pangsit.id
     }
 
     cpu {
@@ -274,10 +467,7 @@ resource "proxmox_virtual_environment_vm" "naspad-D06" {
           gateway = lookup(var.gateaway_list, "naspad-D06")
         }
       }
-      user_account {
-        username = "asahitamlegam"
-        password = "acc"
-      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-naspad.id
     }
 
     cpu {
@@ -332,10 +522,7 @@ resource "proxmox_virtual_environment_vm" "ikan-fillet-D06" {
           gateway = lookup(var.gateaway_list, "ikan-fillet-D06")
         }
       }
-      user_account {
-        username = "asahitamlegam"
-        password = "acc"
-      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-ikan-fillet.id
     }
 
     cpu {
@@ -390,10 +577,7 @@ resource "proxmox_virtual_environment_vm" "tahu-tek-D06" {
           gateway = lookup(var.gateaway_list, "tahu-tek-D06")
         }
       }
-      user_account {
-        username = "asahitamlegam"
-        password = "acc"
-      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-tahu-tek.id
     }
 
     cpu {
@@ -448,10 +632,7 @@ resource "proxmox_virtual_environment_vm" "sego-jamur-D06" {
           gateway = lookup(var.gateaway_list, "sego-jamur-D06")
         }
       }
-      user_account {
-        username = "asahitamlegam"
-        password = "acc"
-      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-sego-jamur.id
     }
 
     cpu {
@@ -480,7 +661,7 @@ resource "proxmox_virtual_environment_vm" "sego-jamur-D06" {
     }
 }
 
-// RESOURCE FILES
+// ROUTERS
 
 resource "proxmox_virtual_environment_file" "cloud_config-alfamart" {
   content_type = "snippets"
@@ -512,7 +693,7 @@ resource "proxmox_virtual_environment_file" "cloud_config-alfamart" {
       - echo "Initialization complete" > /tmp/init_done
     EOF
 
-    file_name = "cloud-config-alfamart-D05.yaml"
+    file_name = "cloud-config-alfamart-D06.yaml"
   }
 }
 
