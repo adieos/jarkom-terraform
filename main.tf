@@ -1080,13 +1080,13 @@ resource "proxmox_virtual_environment_vm" "its-mart-D06" {
     }
 }
 
-resource "proxmox_virtual_environment_vm" "sakinah-D06" {
-    name = "sakinah-D06"
+resource "proxmox_virtual_environment_vm" "superindo-D06" {
+    name = "superindo-D06"
     node_name = "its"
     on_boot = true
     stop_on_destroy = true
     scsi_hardware = "virtio-scsi-single"
-    vm_id = lookup(var.vm_id_list, "sakinah-D06")
+    vm_id = lookup(var.vm_id_list, "superindo-D06")
 
     clone {
       datastore_id = "local-lvm"
@@ -1101,16 +1101,92 @@ resource "proxmox_virtual_environment_vm" "sakinah-D06" {
     initialization {
       ip_config { #eth0
         ipv4 {
-          address = lookup(var.ip_list, "sakinah-superindo")
-          gateway = lookup(var.gateaway_list, "sakinah-superindo")
+          address = lookup(var.ip_list, "superindo-eth0")
+          gateway = lookup(var.gateaway_list, "superindo-eth0")
         }
       }
       ip_config { #eth1
         ipv4 {
-          address = lookup(var.ip_list, "sakinah-sw3")
+          address = lookup(var.ip_list, "superindo-sw4")
         }
       }
-      user_data_file_id = proxmox_virtual_environment_file.cloud_config-sakinah.id
+      ip_config { #eth1
+        ipv4 {
+          address = lookup(var.ip_list, "superindo-sakinah")
+        }
+      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-superindo.id
+    }
+
+    cpu {
+      cores = 1
+      type = "x86-64-v2-AES"
+    }
+
+    memory {
+      dedicated = 1024 # 1GB
+      floating = 1024
+    }
+
+    disk {
+      datastore_id = "local-lvm"
+      file_id = "local:iso/focal-server-cloudimg-amd64.img"
+      file_format = "raw"
+      interface = "virtio0"
+      iothread = true
+      size = 3 # GB
+    }
+
+    network_device {
+      enabled = true
+      firewall = false
+      bridge = "vmbr0"
+    }
+
+    network_device {
+      enabled = true
+      firewall = false
+      bridge = "vmbr0"
+    }
+
+    network_device {
+      enabled = true
+      firewall = false
+      bridge = "vmbr0"
+    }
+}
+
+resource "proxmox_virtual_environment_vm" "indomaret-D06" {
+    name = "indomaret-D06"
+    node_name = "its"
+    on_boot = true
+    stop_on_destroy = true
+    scsi_hardware = "virtio-scsi-single"
+    vm_id = lookup(var.vm_id_list, "indomaret-D06")
+
+    clone {
+      datastore_id = "local-lvm"
+      node_name = "its"
+      vm_id = 5555
+    }
+    
+    agent {
+      enabled = false
+    }
+
+    initialization {
+      ip_config { #eth0
+        ipv4 {
+          address = lookup(var.ip_list, "indomaret-eth0")
+          gateway = lookup(var.gateaway_list, "indomaret-eth0")
+        }
+      }
+      ip_config { #eth1
+        ipv4 {
+          address = lookup(var.ip_list, "infomaret-eth1")
+        }
+      }
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-indomaret.id
     }
 
     cpu {
@@ -1145,13 +1221,13 @@ resource "proxmox_virtual_environment_vm" "sakinah-D06" {
     }
 }
 
-resource "proxmox_virtual_environment_vm" "sakinah-D06" {
-    name = "sakinah-D06"
+resource "proxmox_virtual_environment_vm" "family-mart-D06" {
+    name = "family-mart-D06"
     node_name = "its"
     on_boot = true
     stop_on_destroy = true
     scsi_hardware = "virtio-scsi-single"
-    vm_id = lookup(var.vm_id_list, "sakinah-D06")
+    vm_id = lookup(var.vm_id_list, "family-mart-D06")
 
     clone {
       datastore_id = "local-lvm"
@@ -1166,81 +1242,15 @@ resource "proxmox_virtual_environment_vm" "sakinah-D06" {
     initialization {
       ip_config { #eth0
         ipv4 {
-          address = lookup(var.ip_list, "sakinah-superindo")
-          gateway = lookup(var.gateaway_list, "sakinah-superindo")
+          address = lookup(var.ip_list, "family-mart-eth1")
         }
       }
       ip_config { #eth1
         ipv4 {
-          address = lookup(var.ip_list, "sakinah-sw3")
+          address = lookup(var.ip_list, "family-mart-eth2")
         }
       }
-      user_data_file_id = proxmox_virtual_environment_file.cloud_config-sakinah.id
-    }
-
-    cpu {
-      cores = 1
-      type = "x86-64-v2-AES"
-    }
-
-    memory {
-      dedicated = 1024 # 1GB
-      floating = 1024
-    }
-
-    disk {
-      datastore_id = "local-lvm"
-      file_id = "local:iso/focal-server-cloudimg-amd64.img"
-      file_format = "raw"
-      interface = "virtio0"
-      iothread = true
-      size = 3 # GB
-    }
-
-    network_device {
-      enabled = true
-      firewall = false
-      bridge = "vmbr0"
-    }
-
-    network_device {
-      enabled = true
-      firewall = false
-      bridge = "vmbr0"
-    }
-}
-
-resource "proxmox_virtual_environment_vm" "sakinah-D06" {
-    name = "sakinah-D06"
-    node_name = "its"
-    on_boot = true
-    stop_on_destroy = true
-    scsi_hardware = "virtio-scsi-single"
-    vm_id = lookup(var.vm_id_list, "sakinah-D06")
-
-    clone {
-      datastore_id = "local-lvm"
-      node_name = "its"
-      vm_id = 5555
-    }
-    
-    agent {
-      enabled = false
-    }
-
-    initialization {
-      ip_config { #eth0
-        ipv4 {
-          address = lookup(var.ip_list, "sakinah-superindo")
-          gateway = lookup(var.gateaway_list, "sakinah-superindo")
-        }
-      }
-      ip_config { #eth1
-        ipv4 {
-          address = lookup(var.ip_list, "sakinah-sw3")
-        }
-      }
-      user_data_file_id = proxmox_virtual_environment_file.cloud_config-sakinah.id
+      user_data_file_id = proxmox_virtual_environment_file.cloud_config-family-mart.id
     }
 
     cpu {
